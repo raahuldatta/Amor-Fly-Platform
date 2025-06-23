@@ -1,0 +1,4 @@
+onlyBuiltDependencies:
+  - kerberos
+  - mongodb-client-encryption
+  - sharp

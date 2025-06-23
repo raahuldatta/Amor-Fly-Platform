@@ -1,0 +1,584 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 260 100% 98%; /* Vibrant lavender */
+    --foreground: 260 80% 18%; /* Deep purple for text */
+    --card: 320 100% 99%; /* Soft pink card */
+    --card-foreground: 260 80% 18%;
+    --primary: 280 100% 65%; /* Vibrant purple */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 190 100% 70%; /* Vibrant teal */
+    --secondary-foreground: 260 80% 18%;
+    --muted: 320 80% 95%; /* Light pink muted */
+    --muted-foreground: 260 80% 40%;
+    --accent: 340 100% 70%; /* Vibrant pink accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 80% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 260 80% 80%;
+    --input: 260 80% 80%;
+    --ring: 280 100% 65%;
+    --radius: 0.9rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --background: 260 80% 12%; /* Deep purple */
+    --foreground: 340 100% 98%; /* Bright for contrast */
+    --card: 280 80% 18%; /* Slightly lighter purple */
+    --card-foreground: 340 100% 98%;
+    --primary: 280 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 190 100% 60%;
+    --secondary-foreground: 340 100% 98%;
+    --muted: 260 80% 18%;
+    --muted-foreground: 280 100% 80%;
+    --accent: 340 100% 70%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 80% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 260 80% 30%;
+    --input: 260 80% 30%;
+    --ring: 280 100% 65%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  html {
+    font-family: 'Inter', 'Arial', sans-serif;
+    background: linear-gradient(120deg, #f8e1ef 0%, #a1c4fd 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+}
+
+@layer base {
+  * {
+    /* Removed border-border utility as it does not exist in Tailwind by default */
+  }
+  body {
+    @apply bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-900 dark:text-slate-100;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+}
+
+.glass-effect {
+  @apply backdrop-blur-lg bg-white/20 border border-white/20 shadow-xl;
+  transition: all 0.3s ease;
+}
+
+.glass-effect:hover {
+  @apply bg-white/30 shadow-white/10;
+}
+
+.parallax-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #ffb6c1 0%, #a1c4fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.liquid-button {
+  @apply relative overflow-hidden;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: all 0.3s ease;
+}
+.liquid-button:hover {
+  background: linear-gradient(45deg, rgba(255,255,255,0.2), rgba(255,255,255,0.3));
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.liquid-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.liquid-button:hover::before {
+  left: 100%;
+}
+
+.glass-card {
+  @apply rounded-2xl shadow-xl border border-white/30 backdrop-blur-xl bg-white/40 dark:bg-white/10;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  border-radius: var(--radius);
+  border: 1.5px solid rgba(255,255,255,0.22);
+  background-clip: padding-box;
+  transition: box-shadow 0.3s, background 0.3s;
+}
+.glass-card:hover {
+  @apply shadow-2xl;
+  background: linear-gradient(120deg, rgba(255,255,255,0.5) 0%, rgba(161,196,253,0.3) 100%);
+}
+
+.glass-button {
+  @apply px-6 py-2 rounded-full font-semibold shadow-md transition-all duration-200;
+  background: linear-gradient(90deg, #ffb6c1 0%, #a1c4fd 100%);
+  color: #fff;
+  border: none;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px 0 rgba(255, 182, 193, 0.18);
+}
+.glass-button:hover {
+  background: linear-gradient(90deg, #a1c4fd 0%, #ffb6c1 100%);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 16px 0 rgba(161, 196, 253, 0.18);
+}
+
+/* Animated floating hearts background */
+.hearts-bg {
+  pointer-events: none;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+}
+.heart {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, #ffb6c1 60%, #a1c4fd 100%);
+  opacity: 0.13;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: floatHeart 16s linear infinite;
+  filter: blur(0.5px);
+}
+.heart:nth-child(2) { left: 18vw; top: 62vh; animation-delay: 2s; }
+.heart:nth-child(3) { left: 38vw; top: 28vh; animation-delay: 4s; }
+.heart:nth-child(4) { left: 58vw; top: 78vh; animation-delay: 6s; }
+.heart:nth-child(5) { left: 78vw; top: 18vh; animation-delay: 8s; }
+.heart:nth-child(6) { left: 12vw; top: 12vh; animation-delay: 10s; }
+
+@keyframes floatHeart {
+  0% { transform: scale(1) translateY(0); opacity: 0.13; }
+  50% { transform: scale(1.15) translateY(-32px); opacity: 0.18; }
+  100% { transform: scale(1) translateY(-64px); opacity: 0.13; }
+}
+
+/* Vibrant Badge */
+.vibrant-badge {
+  @apply px-3 py-1 rounded-full font-bold text-xs shadow-md;
+  background: linear-gradient(90deg, #f7971e 0%, #ffd200 100%);
+  color: #fff;
+}
+
+/* Progress Bar */
+.progress-bar {
+  @apply h-2 rounded-full bg-gradient-to-r from-pink-400 to-blue-400 shadow-inner;
+}
+
+/* Notification Bell */
+.notification-bell {
+  @apply relative cursor-pointer;
+}
+.notification-bell .dot {
+  @apply absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-full animate-pulse;
+}
+
+/* Pod Avatars */
+.pod-avatar {
+  @apply w-10 h-10 rounded-full border-2 border-white shadow-md;
+  background: linear-gradient(135deg, #a1c4fd 60%, #ffb6c1 100%);
+}
+
+/* Leaderboard */
+.leaderboard-card {
+  @apply glass-card flex items-center gap-4 p-4 mb-2;
+  border-left: 6px solid #a1c4fd;
+}
+
+/* Achievements */
+.achievement-badge {
+  @apply flex flex-col items-center p-4 rounded-xl shadow-md glass-card transition-all;
+  min-width: 120px;
+}
+.achievement-badge.locked {
+  @apply opacity-40 grayscale;
+}
+.achievement-badge .icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .glass-card, .leaderboard-card, .achievement-badge {
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+  .glass-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Custom CSS Variables */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 94.1%;
+}
+
+/* Base Styles */
+* {
+  /* Removed border-border utility as it does not exist in Tailwind by default */
+}
+
+/* Glassmorphic Components */
+.glass-card {
+  @apply bg-white/20 dark:bg-black/20 backdrop-blur-xl border border-white/20 shadow-xl;
+}
+
+.glass-button {
+  @apply bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-200;
+}
+
+/* Gradient Text */
+.gradient-text {
+  @apply bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent;
+}
+
+/* Floating Hearts Background */
+.hearts-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.hearts-bg::before,
+.hearts-bg::after {
+  content: '♥';
+  position: absolute;
+  color: rgba(236, 72, 153, 0.1);
+  font-size: 2rem;
+  animation: float 6s ease-in-out infinite;
+}
+
+.hearts-bg::before {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.hearts-bg::after {
+  top: 60%;
+  right: 15%;
+  animation-delay: 3s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.1;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.3;
+  }
+}
+
+/* Custom Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in-delay {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  50% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.4s ease-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.8s ease-out forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.4s ease-out forwards;
+}
+
+.animate-fade-in-delay {
+  animation: fade-in-delay 1s ease-out forwards;
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .glass-card {
+    @apply bg-white/30 dark:bg-black/30;
+  }
+}
+
+/* Dark Mode Enhancements */
+.dark .glass-card {
+  @apply bg-black/30 border-white/10;
+}
+
+.dark .glass-button {
+  @apply bg-black/20 border-white/10 hover:bg-black/30;
+}
+
+/* Hover Effects */
+.hover-lift {
+  @apply transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg;
+}
+
+.hover-glow {
+  @apply transition-all duration-200 hover:shadow-lg hover:shadow-pink-500/25;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gradient-to-b from-pink-400 to-purple-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gradient-to-b from-pink-500 to-purple-500;
+}
+
+/* Hide Clerk development notifications */
+[data-clerk-development-mode="true"],
+.clerk-development-mode,
+[data-clerk-claim-completed],
+.clerk-claim-completed {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide any Clerk development banners or notifications */
+div[data-clerk-development],
+div[data-clerk-claim],
+.clerk-development-banner,
+.clerk-claim-banner {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hide Clerk claim completed notification specifically */
+[data-clerk-claim-completed="true"],
+div[data-clerk-claim-completed],
+.clerk-claim-completed,
+[data-clerk-claim-completed="true"] * {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+}
+
+/* Hide any Clerk notifications or banners */
+.clerk-notification,
+.clerk-banner,
+[data-clerk-notification],
+[data-clerk-banner] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
