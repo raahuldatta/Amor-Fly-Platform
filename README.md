@@ -1,205 +1,226 @@
-# Amor Fly Platform
+# 🌐 Amor Fly Platform
 
-A social learning platform that connects people through shared skills and interests, fostering collaborative learning experiences.
+**Amor Fly** is a modern **social learning platform** that connects people through shared skills, interests, and collaborative learning groups called **Pods**. Built using **Node.js 18+, Supabase, Clerk, and Vercel**, it empowers peer-to-peer learning with personalized experiences and real-time collaboration.
+
+---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 18+ 
-- MongoDB Atlas account
-- Vercel account (for deployment)
+### ✅ Prerequisites
 
-### 1. **Clone and Install**
+Make sure you have the following installed and set up:
+
+- **Node.js** 18 or later
+- **Supabase** account (for database and backend services)
+- **Clerk** account (for authentication)
+- **Vercel** account (for deployment)
+
+---
+
+### 📦 1. Clone & Install
+
 ```bash
 git clone <your-repo-url>
 cd amor-fly-platform
 npm install
 ```
 
-### 2. **Set up Environment Variables**
-Create a `.env.local` file:
+---
+
+### ⚙️ 2. Environment Setup
+
+Create a `.env.local` file in the root directory:
+
 ```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/amor_fly_db?retryWrites=true&w=majority&ssl=true&tls=true&tlsAllowInvalidCertificates=false
+NEXT_PUBLIC_SUPABASE_URL=https://<your-supabase-project>.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 JWT_SECRET=your-super-secret-jwt-key-at-least-32-characters-long
 NODE_ENV=development
 ```
 
-### 3. **Set up Database**
-```bash
-# Run the deployment setup script
-npm run deploy-setup
-```
+You can find these values in your Supabase project under **Project Settings → API**.
 
-### 4. **Start Development Server**
+---
+
+### 🧩 3. Set Up Supabase Database
+
+1. Go to your [Supabase Dashboard](https://app.supabase.com)
+2. Create a new project and database
+3. Use SQL Editor to create your schema (tables like `users`, `pods`, `messages`, etc.)
+4. Enable **Row Level Security (RLS)** and write appropriate policies
+5. Optionally, seed test data with Supabase SQL Editor or REST API
+
+---
+
+### 💻 4. Start Development Server
+
 ```bash
 npm run dev
 ```
 
-## 🗄️ Database Schema
+Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
-### Collections
+---
 
-**Users**
-```javascript
-{
-  _id: ObjectId,
-  email: String (unique),
-  password: String (hashed),
-  name: String,
-  profile: {
-    bio: String,
-    avatar: String,
-    skills: [String],
-    location: String,
-    interests: [String]
-  },
-  selectedSkills: [String],
-  personalityAnswers: Object,
-  anonymousName: String,
-  createdAt: Date,
-  updatedAt: Date,
-  isActive: Boolean,
-  isVerified: Boolean,
-  role: String, // "user" or "admin"
-  podId: ObjectId (optional),
-  growthPoints: Number,
-  engagementLevel: Number,
-  weeklyConnectionsUsed: Number
-}
+## 🗄️ Database Schema Overview
+
+### 📍 Users (via Supabase)
+
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY,
+  email TEXT UNIQUE,
+  name TEXT,
+  bio TEXT,
+  avatar TEXT,
+  skills TEXT[],
+  location TEXT,
+  interests TEXT[],
+  selected_skills TEXT[],
+  personality_answers JSONB,
+  anonymous_name TEXT,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now(),
+  is_active BOOLEAN DEFAULT TRUE,
+  is_verified BOOLEAN DEFAULT FALSE,
+  role TEXT DEFAULT 'user',
+  pod_id UUID,
+  growth_points INTEGER DEFAULT 0,
+  engagement_level INTEGER DEFAULT 0,
+  weekly_connections_used INTEGER DEFAULT 0
+);
 ```
 
-**Pods (Learning Groups)**
-```javascript
-{
-  _id: ObjectId,
-  name: String,
-  description: String,
-  creatorId: ObjectId (ref: users),
-  members: [ObjectId], // ref: users
-  maxMembers: Number,
-  category: String,
-  tags: [String],
-  isActive: Boolean,
-  createdAt: Date,
-  updatedAt: Date
-}
+### 👥 Pods
+
+```sql
+CREATE TABLE pods (
+  id UUID PRIMARY KEY,
+  name TEXT,
+  description TEXT,
+  creator_id UUID REFERENCES users(id),
+  members UUID[],
+  max_members INTEGER,
+  category TEXT,
+  tags TEXT[],
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
 ```
 
-**Messages**
-```javascript
-{
-  _id: ObjectId,
-  podId: ObjectId (ref: pods),
-  senderId: ObjectId (ref: users),
-  content: String,
-  type: String, // "text", "image", "file"
-  attachments: [String], // URLs
-  likes: [ObjectId], // ref: users
-  createdAt: Date,
-  updatedAt: Date
-}
+### 💬 Messages
+
+```sql
+CREATE TABLE messages (
+  id UUID PRIMARY KEY,
+  pod_id UUID REFERENCES pods(id),
+  sender_id UUID REFERENCES users(id),
+  content TEXT,
+  type TEXT,
+  attachments TEXT[],
+  likes UUID[],
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
 ```
 
-**Connections**
-```javascript
-{
-  _id: ObjectId,
-  requesterId: ObjectId (ref: users),
-  recipientId: ObjectId (ref: users),
-  status: String, // "pending", "accepted", "rejected"
-  createdAt: Date,
-  updatedAt: Date
-}
+### 🤝 Connections
+
+```sql
+CREATE TABLE connections (
+  id UUID PRIMARY KEY,
+  requester_id UUID REFERENCES users(id),
+  recipient_id UUID REFERENCES users(id),
+  status TEXT,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
 ```
 
-**Notifications**
-```javascript
-{
-  _id: ObjectId,
-  userId: ObjectId (ref: users),
-  type: String, // "connection_request", "pod_invite", "message", etc.
-  title: String,
-  message: String,
-  data: Object, // additional data
-  isRead: Boolean,
-  createdAt: Date
-}
+### 🔔 Notifications
+
+```sql
+CREATE TABLE notifications (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES users(id),
+  type TEXT,
+  title TEXT,
+  message TEXT,
+  data JSONB,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT now()
+);
 ```
 
-## 🚀 Deployment to Vercel
+---
 
-### 1. **Prepare Your MongoDB Atlas**
-- Create a MongoDB Atlas cluster
-- Create a database named `amor_fly_db`
-- Get your connection string
+## 🧪 Development Scripts
 
-### 2. **Update Connection String**
-Your MongoDB connection string should include:
-- Database name: `amor_fly_db`
-- SSL parameters for Vercel compatibility
+| Command              | Description                                  |
+|----------------------|----------------------------------------------|
+| `npm run dev`        | Start development server                     |
+| `npm run build`      | Build the app for production                 |
+| `npm run start`      | Start the production server                  |
+| `npm run lint`       | Run ESLint                                   |
+| `npm run seed`       | (Optional) Seed Supabase DB via API/script   |
 
-**Format:**
-```
-mongodb+srv://username:password@cluster.mongodb.net/amor_fly_db?retryWrites=true&w=majority&ssl=true&tls=true&tlsAllowInvalidCertificates=false
-```
+---
 
-### 3. **Set Environment Variables in Vercel**
-Go to your Vercel project → Settings → Environment Variables:
+## 🚀 Deployment on Vercel
 
-- **MONGODB_URI**: Your full connection string
-- **JWT_SECRET**: A long, random string (generate with `openssl rand -base64 32`)
+### 1. Configure Environment Variables in Vercel
 
-### 4. **Deploy**
+Go to **Vercel → Project Settings → Environment Variables** and add:
+
+| Key                         | Value                                                    |
+|----------------------------|----------------------------------------------------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL                                |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your project's anonymous public API key          |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key (for server-side use only)              |
+| `JWT_SECRET`               | A strong random string (e.g., via `openssl rand -base64 32`) |
+
+---
+
+### 2. Deploy via Vercel CLI
+
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Login to Vercel
+npm install -g vercel
 vercel login
-
-# Deploy
 vercel --prod
 ```
 
-### 5. **Test Your Deployment**
-- Visit your deployed site
-- Try to sign up for a new account
-- Test login functionality
+Visit the generated URL to access your live app.
 
-## 🔧 Development Scripts
-
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run setup        # Set up database locally
-npm run deploy-setup # Set up database for deployment
-npm run seed         # Seed database with sample data
-```
+---
 
 ## 🛠️ Troubleshooting
 
-### Common Issues
+### 🔐 Auth Issues (Clerk)
+- Ensure Clerk frontend and backend integrations are configured properly
+- Make sure `JWT_SECRET` matches across environments
 
-**1. MongoDB Connection Error**
-- Ensure your connection string includes the database name: `amor_fly_db`
-- Add SSL parameters: `&ssl=true&tls=true&tlsAllowInvalidCertificates=false`
-- Check that your MongoDB Atlas cluster is running
+### 🧪 Supabase Errors
+- Confirm correct `anon` and `service_role` keys
+- Use Supabase logs and SQL editor to debug
+- Review RLS policies if data isn’t returning
 
-**2. Build Errors**
-- Ensure all environment variables are set in Vercel
-- Check that `MONGODB_URI` and `JWT_SECRET` are properly configured
+### ⚙️ Build/Deploy Issues
+- Check Vercel logs for runtime errors
+- Ensure all env variables are properly set in both local and prod
 
-**3. Login/Signup Issues**
-- Check Vercel runtime logs for detailed error messages
-- Ensure the database collections are created properly
+---
 
-### Getting Help
-- Check the Vercel deployment logs
-- Review the MongoDB Atlas cluster status
-- Ensure all environment variables are set correctly
+## ✨ Why Amor Fly?
 
-## 📝 License
+- 🌱 Grow through collaborative learning pods
+- 🔐 Clerk + Supabase = secure and scalable user auth + DB
+- 💬 Real-time messaging and engagement features
+- 🚀 Fully deployable with just one command
 
-This project is licensed under the MIT License.
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
